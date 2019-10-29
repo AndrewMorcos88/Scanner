@@ -1,0 +1,2 @@
+# Scanner
+QT c++ project 
