@@ -124,6 +124,8 @@ void MainWindow::browseButtonPressed()
 
 void MainWindow::runAlgorithmPressed()
 {
+    TOKENS_TYPE.clear();
+    TOKENS_VALUE.clear();
 
     Reserved_Words["write"] = 1;
     Reserved_Words["read"] = 2;
