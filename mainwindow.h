@@ -64,29 +64,24 @@ public slots:
 private:
     Ui::MainWindow *ui;
     QWidget *centralWidget;
-    QWidget *AnotherWidget;
-    QGraphicsScene *scene;
     //colors and pallete
     QPalette *mainPalette;
     //layout
     QFormLayout *firstInputPage;
+    QFormLayout *outputForm;
     QHBoxLayout *mainLayout;
     QHBoxLayout *inputLayout;
-    QHBoxLayout *graphicsLayout;
+    QHBoxLayout *outputLayout;
 
     // buttons
     QPushButton *browseButton;
     QPushButton *RunButton;
-    //comboBox
-    QComboBox *algorithm;
-    //label
-    QLabel *chooseAlgorithm;
+
     //text
     QLineEdit *fileName;
     QLineEdit * First_Line;
     QLineEdit * Second_Line;
 
-   QTableWidget * My_Table;
 
 };
 
