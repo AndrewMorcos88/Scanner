@@ -263,19 +263,21 @@ void MainWindow::runAlgorithmPressed()
 
 
 
-                    // check for fixed keywords
-
-
+                    if (One_Line[i]==' ' || i==Size_string-1)
+                    {
                         it = Reserved_Words.find(my_token);
 
-                        if (it != Reserved_Words.end())  // token found in Reserved words
+
+                        if (it != Reserved_Words.end() )   // token found in Reserved words
                         {
                             Check_Reserved_Keywords(it.value(), TOKENS_TYPE, TOKENS_VALUE, Wait_FOR_IDENTIFIERS
                             ,Wait_FOR_SemiCOLumn);
+
                             my_token = "";
                             continue;
                         }
 
+                    }
 
 
 
@@ -294,27 +296,37 @@ void MainWindow::runAlgorithmPressed()
 
 
 
-
                         // check for numbers
 
-                        if ( One_Line[i].isDigit() && Wait_FOR_IDENTIFIERS == false)
-                        {
-                            There_is_Number = true;
-                        }
+                                          if ( One_Line[i].isDigit() && Wait_FOR_IDENTIFIERS == false)
+                                          {
+                                              There_is_Number = true;
+                                          }
 
-                        if (There_is_Number == true)
-                        {
-                            if (One_Line[i].isDigit() || One_Line[i] == '.')
-                                Number += One_Line[i];
-                            else if (Number != "")
-                            {
-                                TOKENS_TYPE.push_back("Number");
-                                TOKENS_VALUE.push_back(Number);
-                                There_is_Number = false;
-                                my_token = "";
-                            }
+                                          if (There_is_Number == true)
+                                          {
+                                              if (One_Line[i].isDigit() || One_Line[i] == '.')
+                                                  Number += One_Line[i];
+                                              else if (Number != "")
+                                              {
+                                                  TOKENS_TYPE.push_back("Number");
+                                                  TOKENS_VALUE.push_back(Number);
+                                                  There_is_Number = false;
+                                                  my_token = "";
+                                              }
 
-                        }
+                                              if (i==Size_string-1)
+                                              {
+                                                  TOKENS_TYPE.push_back("Number");
+                                                  TOKENS_VALUE.push_back(Number);
+                                                  There_is_Number = false;
+                                                  my_token = "";
+
+                                              }
+
+                                          }
+
+
 
 
 
@@ -351,9 +363,8 @@ void MainWindow::runAlgorithmPressed()
 
 
 
-                                    if (One_Line[i] == ' ' && my_token != "")
-                                        Flag_Error = true;
-
+                                    if  ( (One_Line[i] == ' '|| i==Size_string-1) && my_token != "")
+                                                                     Flag_Error = true;
 
 
                     }
