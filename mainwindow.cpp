@@ -192,7 +192,7 @@ void MainWindow::runAlgorithmPressed()
                     if (!(One_Line[i]==';'|| One_Line[i] == ',' || One_Line[i] == '(' || One_Line[i] == ')' ||
                         One_Line[i] == '{' || One_Line[i] == '}' || One_Line[i] == '/' || One_Line[i] == '*' ||
                         One_Line[i] == '+' || One_Line[i] == '-' || One_Line[i] == ':' || One_Line[i] == '<' ||
-                        One_Line[i] == '>' || One_Line[i] == '!' || One_Line[i] == '"' || One_Line[i] == ' '))
+                        One_Line[i] == '>' || One_Line[i] == '!' || One_Line[i] == '"' || One_Line[i] == ' ') || One_Line[i] =='=')
                         my_token += One_Line[i];  // take only the alphapit and digit charachters
 
 
@@ -248,6 +248,37 @@ void MainWindow::runAlgorithmPressed()
 
 
 
+                    // you now have identifier to add it
+
+                    if (Wait_FOR_IDENTIFIERS == true && (One_Line[i] == ';' || One_Line[i] == ' ' ||
+                        One_Line[i]=='('  || One_Line[i]=='=' ) &&my_token!="" )
+                    {
+                        TOKENS_TYPE.push_back("IDENTIFIER");
+                        TOKENS_VALUE.push_back(my_token);
+                        IDENTIFIERS[my_token] = 1;  // add it to
+                        Wait_FOR_IDENTIFIERS = false;
+                        my_token = "";
+
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     // check for identifiers
                     if (my_token != "")
                     {
@@ -261,7 +292,7 @@ void MainWindow::runAlgorithmPressed()
 
                     }
 
-
+                    //check for reserved words
 
                     if (One_Line[i]==' ' || i==Size_string-1)
                     {
@@ -281,24 +312,11 @@ void MainWindow::runAlgorithmPressed()
 
 
 
-                        // you now have identifier to add it
-
-                        if (Wait_FOR_IDENTIFIERS == true && (One_Line[i] == ';' || One_Line[i] == ' ' ||
-                            One_Line[i]=='('  || One_Line[i]==':' ) &&my_token!="" )
-                        {
-                            TOKENS_TYPE.push_back("IDENTIFIER");
-                            TOKENS_VALUE.push_back(my_token);
-                            IDENTIFIERS[my_token] = 1;  // add it to
-                            Wait_FOR_IDENTIFIERS = false;
-                            my_token = "";
-
-                        }
-
 
 
                         // check for numbers
 
-                                          if ( One_Line[i].isDigit() && Wait_FOR_IDENTIFIERS == false)
+                                          if ( One_Line[i].isDigit())
                                           {
                                               There_is_Number = true;
                                           }
@@ -311,14 +329,16 @@ void MainWindow::runAlgorithmPressed()
                                               {
                                                   TOKENS_TYPE.push_back("Number");
                                                   TOKENS_VALUE.push_back(Number);
+                                                  Number="";
                                                   There_is_Number = false;
                                                   my_token = "";
                                               }
 
-                                              if (i==Size_string-1)
+                                              if (i==Size_string-1 && There_is_Number==true)
                                               {
                                                   TOKENS_TYPE.push_back("Number");
                                                   TOKENS_VALUE.push_back(Number);
+                                                  Number="";
                                                   There_is_Number = false;
                                                   my_token = "";
 
@@ -339,13 +359,18 @@ void MainWindow::runAlgorithmPressed()
                                     }
 
 
+
+
+                                    // check for operators
+
                                     QString temp = "";
                                     temp += One_Line[i];
                                     it = Operators_Assigments.find(temp);  // search for operator of 1 char
                                     if (it != Operators_Assigments.end())
                                     {
-                                        Check_Operators(it.value(), TOKENS_TYPE, TOKENS_VALUE, Wait_FOR_SemiCOLumn, Wait_FOR_IDENTIFIERS);
-                                        my_token = "";
+                                        Check_Operators(it.value(), TOKENS_TYPE, TOKENS_VALUE,
+                                                        Wait_FOR_SemiCOLumn, Wait_FOR_IDENTIFIERS ,my_token ,IDENTIFIERS);
+
 
                                     }
                                     else if (i + 1 < Size_string)   // check for 2 char operators
@@ -354,17 +379,24 @@ void MainWindow::runAlgorithmPressed()
                                         it = Operators_Assigments.find(temp);
                                         if (it != Operators_Assigments.end())
                                         {
-                                            Check_Operators(it.value(), TOKENS_TYPE, TOKENS_VALUE, Wait_FOR_SemiCOLumn, Wait_FOR_IDENTIFIERS);
+                                            Check_Operators(it.value(), TOKENS_TYPE, TOKENS_VALUE
+                                                            , Wait_FOR_SemiCOLumn, Wait_FOR_IDENTIFIERS ,my_token ,IDENTIFIERS);
                                             i++;
-                                            my_token = "";
+
                                         }
 
                                     }
 
 
 
-                                    if  ( (One_Line[i] == ' '|| i==Size_string-1) && my_token != "")
-                                                                     Flag_Error = true;
+
+
+
+
+
+
+                                    if  (  i==Size_string-1 && my_token != "")
+                           Flag_Error = true;
 
 
                     }
@@ -442,20 +474,20 @@ void MainWindow::Check_Reserved_Keywords(int target, QVector<QString>& TOKENS_TY
 
     switch (target)
     {
-    case 1: TOKENS_TYPE.push_back("Fixed Weyword"); TOKENS_VALUE.push_back("WRITE"); Wait_FOR_SemiCOLumn = true; break;
-        case 2: TOKENS_TYPE.push_back("Fixed Weyword"); TOKENS_VALUE.push_back("READ"); Wait_FOR_SemiCOLumn = true;  break;
-        case 3: TOKENS_TYPE.push_back("Fixed Weyword"); TOKENS_VALUE.push_back("IF"); break;
-        case 4: TOKENS_TYPE.push_back("Fixed Weyword"); TOKENS_VALUE.push_back("ELSE"); break;
-        case 5: TOKENS_TYPE.push_back("Fixed Weyword"); TOKENS_VALUE.push_back("RETURN"); Wait_FOR_SemiCOLumn = true; break;
-        case 6: TOKENS_TYPE.push_back("Fixed Weyword"); TOKENS_VALUE.push_back("BEGIN"); break;
-        case 7: TOKENS_TYPE.push_back("Fixed Weyword"); TOKENS_VALUE.push_back("END"); break;
-        case 8: TOKENS_TYPE.push_back("Fixed Weyword"); TOKENS_VALUE.push_back("MAIN"); break;
-        case 9: TOKENS_TYPE.push_back("Fixed Weyword"); TOKENS_VALUE.push_back("STRING"); Wait_FOR_SemiCOLumn = true; Wait_FOR_IDENTIFIERS = true;  break;
-        case 10: TOKENS_TYPE.push_back("Fixed Weyword"); TOKENS_VALUE.push_back("INT"); Wait_FOR_SemiCOLumn = true; Wait_FOR_IDENTIFIERS = true; break;
-        case 11: TOKENS_TYPE.push_back("Fixed Weyword"); TOKENS_VALUE.push_back("REAL"); Wait_FOR_SemiCOLumn = true; Wait_FOR_IDENTIFIERS = true;  break;
-        case 12: TOKENS_TYPE.push_back("Fixed Weyword"); TOKENS_VALUE.push_back("UNTIL"); break;
-        case 13: TOKENS_TYPE.push_back("Fixed Weyword"); TOKENS_VALUE.push_back("REPEAT"); break;
-        case 14:  TOKENS_TYPE.push_back("Fixed Weyword"); TOKENS_VALUE.push_back("THEN"); break;
+    case 1: TOKENS_TYPE.push_back("Fixed KEYWORD"); TOKENS_VALUE.push_back("WRITE"); Wait_FOR_SemiCOLumn = true; break;
+    case 2: TOKENS_TYPE.push_back("Fixed KEYWORD"); TOKENS_VALUE.push_back("READ"); Wait_FOR_SemiCOLumn = true;Wait_FOR_IDENTIFIERS=true;  break;
+        case 3: TOKENS_TYPE.push_back("Fixed KEYWORD"); TOKENS_VALUE.push_back("IF"); break;
+        case 4: TOKENS_TYPE.push_back("Fixed KEYWORD"); TOKENS_VALUE.push_back("ELSE"); break;
+        case 5: TOKENS_TYPE.push_back("Fixed KEYWORD"); TOKENS_VALUE.push_back("RETURN"); Wait_FOR_SemiCOLumn = true; break;
+        case 6: TOKENS_TYPE.push_back("Fixed KEYWORD"); TOKENS_VALUE.push_back("BEGIN"); break;
+        case 7: TOKENS_TYPE.push_back("Fixed KEYWORD"); TOKENS_VALUE.push_back("END"); break;
+        case 8: TOKENS_TYPE.push_back("Fixed KEYWORD"); TOKENS_VALUE.push_back("MAIN"); break;
+        case 9: TOKENS_TYPE.push_back("Fixed KEYWORD"); TOKENS_VALUE.push_back("STRING"); Wait_FOR_SemiCOLumn = true; Wait_FOR_IDENTIFIERS = true;  break;
+        case 10: TOKENS_TYPE.push_back("Fixed KEYWORD"); TOKENS_VALUE.push_back("INT"); Wait_FOR_SemiCOLumn = true; Wait_FOR_IDENTIFIERS = true; break;
+        case 11: TOKENS_TYPE.push_back("Fixed KEYWORD"); TOKENS_VALUE.push_back("REAL"); Wait_FOR_SemiCOLumn = true; Wait_FOR_IDENTIFIERS = true;  break;
+        case 12: TOKENS_TYPE.push_back("Fixed KEYWORD"); TOKENS_VALUE.push_back("UNTIL"); break;
+        case 13: TOKENS_TYPE.push_back("Fixed KEYWORD"); TOKENS_VALUE.push_back("REPEAT"); break;
+        case 14:  TOKENS_TYPE.push_back("Fixed KEYWORD"); TOKENS_VALUE.push_back("THEN"); break;
 
         default: break;
 
@@ -465,13 +497,13 @@ void MainWindow::Check_Reserved_Keywords(int target, QVector<QString>& TOKENS_TY
 
 
 void  MainWindow:: Check_Operators(int target, QVector<QString>& TOKENS_TYPE, QVector<QString> &TOKENS_VALUE
-                     , bool & Wait_FOR_SemiCOLumn, bool &Wait_FOR_IDENTIFIERS){
+                     , bool & Wait_FOR_SemiCOLumn, bool &Wait_FOR_IDENTIFIERS ,QString & My_Token , QMap<QString,int> &IDENTIFIERS){
     switch (target)
         {
-        case 1: TOKENS_TYPE.push_back("Assigment");
+
+         case 1:TOKENS_TYPE.push_back("Assigment");
             TOKENS_VALUE.push_back(";");
             Wait_FOR_SemiCOLumn = false;
-            Wait_FOR_IDENTIFIERS=false;
             break;
 
         case 2: TOKENS_TYPE.push_back("Assigment");
@@ -509,8 +541,19 @@ void  MainWindow:: Check_Operators(int target, QVector<QString>& TOKENS_TYPE, QV
             TOKENS_VALUE.push_back("!=");
             break;
 
-        case 11: TOKENS_TYPE.push_back("Assigment");
+        case 11:
+         if(My_Token != "")
+    {
+             TOKENS_TYPE.push_back("IDENTIFIER");
+             TOKENS_VALUE.push_back(My_Token);
+             IDENTIFIERS[My_Token]=1;
+            My_Token="";
+            Wait_FOR_IDENTIFIERS=false;
+
+    }
+         TOKENS_TYPE.push_back("Assigment");
             TOKENS_VALUE.push_back(":=");
+
             break;
 
 
