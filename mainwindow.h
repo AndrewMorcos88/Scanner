@@ -47,7 +47,7 @@ public:
       void Check_Reserved_Keywords(int target, QVector<QString>& TOKENS_TYPE, QVector<QString> &TOKENS_VALUE,
           bool &Wait_FOR_IDENTIFIERS , bool & Wait_FOR_SemiCOLumn);
       void Check_Operators(int target, QVector<QString>& TOKENS_TYPE, QVector<QString> &TOKENS_VALUE
-          , bool & Wait_FOR_SemiCOLumn, bool &Wait_FOR_IDENTIFIERS);
+          , bool & Wait_FOR_SemiCOLumn, bool &Wait_FOR_IDENTIFIERS ,QString & My_Token ,QMap<QString, int> &IDENTIFIERS);
 
 
 
